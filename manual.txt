@@ -1,0 +1,78 @@
+initial configuration
+*****************************************************************
+
+++++++++++++++on vsc extension marketplace install ES7+ React/Redux/React-Native snippets +++++++++++++++++++++
+++++++++++++++Multiple cursor case preserve+++++++++++++++++++++++++++++++
++++++++++++++ Tailwind Css Intellisense +++++++++++++++++++++++++++++++++++++++
+
+mkdir mern-blog
+npm create vite@latest
+project name = client
+cd client
+npm i
+---------------------------------------------------------------
+google tailwind css with vite --> result below
+npm install -D tailwindcss postcss autoprefixer
+----------------------------------------------------------------
+initialize tailwindcss by --> below
+npx tailwindcss init -p
+
+----------------------------------------------------------------
+replace content of tailwind.config.js just created with --> below
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+------------------------------------------------------------
+
+next go to index.css in the src directory and paste --> below
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+--------------------------------------------------------------
+
+afterwards delete unnecessary files listed
+App.css
+public/svg file
+src/assets/svg file
+index.html clear previously deleted items (link vite.svg)
+adjust the title tag in index.html to MERN blog
+
+---------------------------------------------------------------
+
+edit App.jsx to the basic react functional component APP --> below 
+
+export default function App(){
+  return(
+    <div>App component</div>
+  )
+}
+-------------------------------------------------------------------
+npm run dev
+
+
+******************************************************************
+next phase
+******************************************************************
+
+on the terminal go back to the mern-blog folder by --> cd ..
+*** initialize the github repository in the mern-blog directory using comand --> below
+git init
+git add . /// or git add all
+git commit -m "Install react js and Tailwind Css and create the first template"
+
++++++ go to your github accout and create a new repository using this connect --> below
+git remote add origin https://github.com/Languagelabs/mern-blog.git
+git branch -M main
+git push -u origin main
