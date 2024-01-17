@@ -187,3 +187,46 @@ in a flowbite <TextInput /> invoke the react icon imported --> below
   />
 </form>
 
+refer to header component for all changes using flowbite and tailwind
+
+*********************************************************
+*********************************************************
+*********************************************************
+*********************************************************
+backend
+*******************************************************
+*********************************************************
+*********************************************************
+*********************************************************
+
+open a new folder called api
+in the api directory create a file called index.js
+
+in the root directory run --> below
+npm install express nodemon
+
+update the package.json to type module and scripts to run dev and start --> below
+
+"type": "module",
+  "scripts": {
+    "dev": "nodemon api/index.js",
+    "start": "node api/index.js"
+  },
+
+move the gitignore file in the client directory to the main or root directory
+
+in the api/index.js -->
+ 
+import express from 'express'
+
+const app = express();
+
+app.listen(3000, () => {
+  console.log('Server is running on port 300')
+})
+
+in the terminal on the main directory --> below
+npm run dev
+
+*the above invokes nodemon to start index.js the dev in script earlier edited.
+ in developmet ' npm run start ' it invokes the start
