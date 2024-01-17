@@ -229,4 +229,37 @@ in the terminal on the main directory --> below
 npm run dev
 
 *the above invokes nodemon to start index.js the dev in script earlier edited.
- in developmet ' npm run start ' it invokes the start
+ in developmet ' npm run start ' it invokes the start 
+
+
+connect mongoose and get the connection api stored in .env --> below
+
+npm install mongoose dotenv
+
+on api/index.js --> below
+
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+mongoose
+.connect(process.env.MONGO)
+.then(()=> {
+    console.log('Mongodb connected')
+})
+.catch(err => {
+    console.log('this is the error -> ' + err)
+});
+
+const app = express();
+
+app.listen(3000, () => {
+    console.log('Server is running on Port 3000')
+});
+
+***note ensure you store the mongodb variables in the .env file created as MONGO
+enlist .env in the gitignore so it is excluded from github
+
+commit changes and push
