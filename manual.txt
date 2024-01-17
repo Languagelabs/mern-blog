@@ -76,3 +76,36 @@ git commit -m "Install react js and Tailwind Css and create the first template"
 git remote add origin https://github.com/Languagelabs/mern-blog.git
 git branch -M main
 git push -u origin main
+
+
+******************************************************************
+next phase
+******************************************************************
+
+on a new terminal cd client and enable pages --> below
+npm install react-router-dom
+
+go to the src folder and create a new folder within called pages
+create individual pages, Home, About,Projects,Dashboard,SignIn, SignUp .jsx respectively
+inside each jsx document instert the react functional component aka rfc 
+
+go to the App.jsx and run the following --> below
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+/////////////////////******>import each pages individually eg
+import Home from './pages/Home.jsx'
+///////////////***********>others etc...
+
+
+insert an rfc accordingly  but this time include the BrowserRouter , Routes, and Route to enable pages--> below
+export default function App(){
+  return(
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} /> 
+        etc...
+      </Routes>
+    </BrowserRouter>
+    )
+}
+
