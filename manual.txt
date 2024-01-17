@@ -302,5 +302,63 @@ export default User;
 ************commit and push to github
 
 *****************************************
-next phase******** test api
+next phase******** creating a test api route
 *****************************************
+
+
+on the api/index.js --> below
+
+app.get('/test', (req, res) => {
+  res.json({message: 'API is working})
+});
+
+--------------------------------------------
+when there are a lot of routes on the api/index.js it can be disorganized
+
+hence create a folder in the api directory called routes
+inside the routes create a file called user.route.js  
+instert the codes as such --> below
+
+import express from 'express'
+const router = express.Router();
+
+router.get('/test', (req, res) => {
+  res.json({ message: 'API working'})
+})
+
+export default router
+
+
+-----> in the index.js update the app.get('/test', ...) delete block
+add code  -------->below
+
+import UserRoutes from './routes/user.route.js';  //////////// any name imports router. capitalize first letter
+
+app.use('/api/user/', UserRoutes);
+
+
+recall we moved our test api route from the index.js to the user.route.js
+in a similar way we can separate the logic in the user.route.js ie.
+
+(req, res) => {
+  res.json({ message: 'API working'})
+}
+
+this is a logic placed in the route that should be moved to a controller since its the logic behind the user test api being created ..
+
+--------------> in the api folder create a new folder called the controllers
+
+inside the controller make a new file user.controller.js
+
+insert code --> below
+
+export const test = (req,res) => {
+  res.json({ message: 'API working'})
+}
+
+in the user.route.js delete the 'logic function and replace with the imported constant test from controller
+
+check changes
+
+
+commit and push
