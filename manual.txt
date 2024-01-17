@@ -6,8 +6,9 @@ initial configuration
 +++++++++++++ Tailwind Css Intellisense +++++++++++++++++++++++++++++++++++++++
 
 mkdir mern-blog
-npm create vite@latest
-project name = client
+npm create vite@latest  
+project name = client 
+----> select javascript + swc (for more speed)
 cd client
 npm i
 ---------------------------------------------------------------
@@ -108,4 +109,81 @@ export default function App(){
     </BrowserRouter>
     )
 }
+
+
+you can commit to github after finishing creation of required pages and Routes
+
+on vsc go to source control like a y shaped icon on the left of the screen open it
+hover on 'Changes' and click on the + Sign (it means to add all Changes)
+write a commit message in the message input field
+click on the dropdown arrow and select Commit and push
+
+
+
+*****************************************
+next step
+*****************************************
+
+creating the header component
+
+in the src folder create a subfolder called components
+create a file called Header.jsx
+insert an rfc into the Header.jsx
+finally import this header  in the App.js --> below
+
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} /> 
+        etc...
+      </Routes>
+    </BrowserRouter>
+
+
+all previous code remains thesame notice that the header is consistent across all Routes
+
+********************************************
+next phase
+********************************************
+
++++++++++++++install flowbite react as a dependency, its a ui library that makes building of components easy
+visit webpage
+
+on the terminal in the client directory enter the code --> below
+npm i flowbite-react
+
+++++update tailwind.config.js --> below
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    // ...
+    'node_modules/flowbite-react/lib/esm/**/*.js',           <--
+  ],
+  plugins: [
+    // ...
+    require('flowbite/plugin'),                              <--
+  ],
+};
+
+restart package 
+
+on the header component design as required for pages existing
+using the flowbite ui the flowbite ui eg Navbar , TextInput
+
+
+
+*********
+npm install react-icons
+
+import {AiOutlineSearch} from 'react-icons/ai'
+in a flowbite <TextInput /> invoke the react icon imported --> below
+
+<form>
+  <TextInput
+    type='text'
+    placeholder='Search...'
+    rightIcon={AiOutlineSearch}
+  />
+</form>
 
