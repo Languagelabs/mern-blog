@@ -263,3 +263,44 @@ app.listen(3000, () => {
 enlist .env in the gitignore so it is excluded from github
 
 commit changes and push
+
+
+******************************************
+creating user model***************
+****************************************
+
+we use models as a set of rules to facilitate database structuring ususally built like a schema
+
+first in the api directory create a new directory called models
+create a file called user.model.js
+
+enter the following in the user.model.js --> below
+
+import mongoose from 'mongoose';
+
+const userSchema = new mongoose.schema({
+  username: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  email: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+}, {timestamps: true});
+
+const User = mongoose.model('User', userSchema);
+export default User;
+
+
+************commit and push to github
+
+*****************************************
+next phase******** test api
+*****************************************
