@@ -1,10 +1,11 @@
 import User from "../models/user.model.js";
 import bcryptjs from 'bcryptjs';
+import { errorHandler } from "../utils/error.js";
 
-export const signup = async (req, res) => {
+export const signup = async (req, res, next) => {
     const {username, email, password} = req.body; 
     if(!username || !email || !password || username === '' || email === '' || password === '' ){
-       return res.status(400).json({ message: 'All fields are required'})
+       next(errorHandler(400, 'All field are required'));
     }
 
     const hashedPassword = bcryptjs.hashSync(password, 10);
@@ -20,7 +21,7 @@ export const signup = async (req, res) => {
         res.json('Signup successful');
 
     } catch (error) {
-        res.status(409).json({ error_message: error.message})
+        next(errorHandler(409, 'Conflicting data exists'))
     } 
 
 };

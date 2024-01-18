@@ -440,3 +440,57 @@ check using insomia or postman to see these routes are functioning
 
 we could consider including a middleware to handle all the errors so we become less repetitive
 
+commit and push
+
+************************************************************************
+error middleware - adding a middleware and a function to handle errors
+***********************************************************************
+
+to set up the middle ware on the index.js in the api directory place it at current end --> below
+
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || 'Internal Server error';
+  res.status(statusCode).json({
+    success: false,
+    statusCode,
+    message
+  })
+});
+
+
+
+----------------------------------------
+we invoke the middle ware using the next therfore include it alongside req,res
+on the auth.controller.js --> below
+export const signup = async (req, res, next) => {
+...
+  try{
+    await newUser.save();
+    res.json('successfully registered');
+  }catch(error){
+    next(error)
+  }
+}
+
+---------------------------
+
+in the api folder create a folder called utils. we would use this folder for storing utility functions such as the functon that would control the error middle ware
+
+inside the utils create a file named error.js inside ---> below
+
+export const errorHandler = (statusCode, message) => {
+  const error = new Error();
+  error.statusCode = statusCode;
+  error.message = message;
+  return error
+}
+
+
+
+********************************************************
+creating signup page ui*
+*******************************************************
+use Tailwind and Flowbite to create the ui that can signup user
+
+adding functonality to form ---->
