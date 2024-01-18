@@ -5,7 +5,7 @@ export default function Home() {
       <span>
        Home
        </span>
-      <Button className='m-1 inline-block'>enter</Button>
+      <Button className='m-1 inline-block '>enter</Button> 
     </div>
   )
 }

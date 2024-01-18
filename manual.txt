@@ -362,3 +362,81 @@ check changes
 
 
 commit and push
+
+*****************************************************
+next section create signup api route
+****************************************************
+open an new terminal and install bcrypt.js in the root folder -->
+
+npm install bcryptjs 
+create an auth.route.js and an auth.controller.js with appropriate folders
+
+
+in the auth.controller.js --> below
+import bcryptjs from 'bcryptjs';
+import User from 'models/user.model.js';
+
+export const signup = async (req, res) => {
+  
+  const {username, email, password} = req.body;
+  if (!username || !email || !password || username === '' || email === '' || password === ''){
+    return res.status(400).json('All fields are important')
+  }
+
+  const hashedPassword = bcryptjs.hashSync(password, 10);
+  const newUser = new User({
+    username,
+    email,
+    password: hashedPassword
+  })
+
+  try{
+    await newUser.save();
+    res.status(200).json('Signup successful');
+  }catch(error){
+    res.status(409).json({ message: error.message })
+  }
+
+}
+---------------------------------------------------
+in the auth.route.js --> below
+
+import express from 'express'
+import {signup} from 'auth.controller.js'
+const router = express.Router();
+
+router.post('/signup', signup );
+
+export default router;
+
+--------------------------------------------------------
+in the index.js --> below
+
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import userRoutes from 'routes/user.route.js';
+import authRoutes from 'routes/auth.route.js';
+
+
+dotenv.config();
+
+const app = express();
+app.use(express.json());
+
+mongoose.connect(process.env.MONGO)
+.then(() => {
+  console.log('Mongodb connected successfully')
+}).catch( err => console.log(err));
+
+app.use('/api/user', userRoutes);
+app.use('/api/auth', authRoutes);
+
+app.listen('3000', () => {
+  console.log('Server running on port 3000')
+})
+
+check using insomia or postman to see these routes are functioning
+
+we could consider including a middleware to handle all the errors so we become less repetitive
+
