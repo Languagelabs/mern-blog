@@ -494,3 +494,53 @@ creating signup page ui*
 use Tailwind and Flowbite to create the ui that can signup user
 
 adding functonality to form ---->
+
+add an onChange handler to track input changes and store in a state variables
+
+import {useState} from 'react'
+
+after the exports you would have a function called handle change --> below
+const [ formData, setFormData ] = useState({});;
+
+const handleChange = (e) => {
+  setFormData(...formData, [e.target.name]: e.target.value)
+}
+
+in the input attribute
+onChange(handleChange)
+
+
+then on the form tag add an onSubmit event and create a function handleSubmit
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try{
+    const res = await fetch('/api/auth/signup', {
+      method: 'POST',
+      header: { 'Content-Type': 'application/json'},
+      body: JSON.stringify(formData);
+    });
+    const data = res.json();
+    console.log(data);
+  }catch(error){
+    console.log(error)
+  }
+}
+
+for the fetch to call localhost:3000 backend server from the client server, we have to configure vite.config.js  amd point '/api' prefix to the localhost:3000. 
+
+above the plugins, add server object --> below
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        secure: false
+      },
+    },
+  },
+  ...
+
+
+
+
+ 
