@@ -19,7 +19,7 @@ export const signup = async (req, res, next) => {
 
     try {
         await newUser.save();
-        res.json('Signup successful');
+        res.status(200).json('Signup successful');
 
     } catch (error) {
         next(errorHandler(409, 'Conflicting data exists'))

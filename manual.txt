@@ -544,4 +544,123 @@ above the plugins, add server object --> below
 --------------------
 see codes for reference...
 
- 
+_________________________________________
+Redux
+
+we would implement react redux for handling all our state data such as user auth data, loading, error etc
+
+first we visit react-redux official site and get started. it is installed in the front end --> below
+
+cd client
+
+npm install @reduxjs/toolkit react-redux
+
+once installed in the src folder make a subfolder called redux and inside the folder create the store -->
+
+src/redux/store.js
+
+import { configureStore } from '@reduxjs/toolkit'
+
+export const store = configureStore({
+  reducer: {},
+})
+
+
+---------
+in the main.jsx  we want to provide the store across the entire app like this -->
+
+import { store } from './redux/store.js'
+import { Provider } from 'react-redux'
+
+...
+<Provider store={store}>
+  <App />
+</Provider>,
+...
+
+
+next step is to create a slice and this is a kind of piece of state we want to add
+in our case is the userSlice
+
+inside the redux folder we want to create a subfolder called user and inside the folder make a file called userSlice.js
+
+in the documentation of redux there is a counterSlice that can be referenced for example.
+
+in the userSlice.js --->
+
+import { createSlice } from @reduxjs/toolkit
+
+const initialState = {
+  currentUser: null,
+  error: null,
+  loading: false
+}
+
+export const userSlice = createSlice({
+  name: 'user',
+  initialState,
+  reducers: {
+    signinStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    signinSuccess: (state, action) => {
+      state.currentUser = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    signinFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  },
+})
+
+export const { signinStart, signinSuccess, signinFailure } = userSlice.actions ;
+
+export default userSlice.reducer
+
+----------------------------------------------
+now in the store.js -->
+
+import {configureStore} from '@reduxjs/toolkit'
+import userReducer from 'user/userSlice.js'
+
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+  }
+})
+
+----------------------------------------------
+
+in order to utilize this in our front end we need to use dispatch and useSelector hooks from react-redux
+also we need to import our reducers from userSlice
+
+the idea is to remove the state from the app into a global redux state therefore the useState hook for error and loading would no longer be needed so remove them. in the functionality implementation a lot of setErrorMessage, setLoading etc exists so modify logic to fit redux signinFailure, signinSuccess etc.
+
+for getting the actual global state use the useSelector hook to destructure the current error and loading statusCode
+
+
+ pages/SignIn.jsx -->
+...
+import {dispatch, useSelector} from 'react-redux'
+import {signinSuccess, signinFailure, signinStart} from 'user/userSlice.js'
+
+
+
+export default SignIn(){
+  const dispatch = useDispatch()
+  const {loading, error: errorMessage} = useSelector((state) => state.user)
+
+  return (
+      *****use where appropriate******
+    dispatch(signinStart());
+    dispatch(signinFailure(data.essage))
+    dispatch(signinSuccess(data))
+  )
+}
+
+
+adjust where appropriate
