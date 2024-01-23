@@ -664,3 +664,78 @@ export default SignIn(){
 
 
 adjust where appropriate
+
+
+
+-------------------------------------
+adding redux persist to ensure data remains persistent even on refresh
+*******************************************************************
+
+
+for redux persist to work appropriately we need to configure as below --->
+
+in the client side 
+npm install redux-persist
+
+in the store.js we have previously we need a persistReducer(persistConfig, rootReducer) hook which requires
+a persistConfig and a rootReducer. So instead of having multiple reducers as before we can combine them into 
+one rootReducer.
+
+import {configureStore } from '@reduxjs/toolkit'
+import userReducer from '../redux/user/userSlice.js'
+
+export const store = configureStore({
+  reducer: {
+    user: userReducer,
+  }
+})
+
+
+improvement--->
+
+import { configureStore, combineReducers } from '@reduxjs/toolkit'
+import userReducer from './redux/user/userSlice.js'
+import { persistReducer, persistStore } from 'redux-persist'
+import { storage } from 'redux-persist/lib/storage'
+
+
+const rootReducer = combineReducers({
+  user: userSlice,
+});
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  version: 1,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({serializableCheck: false}),
+});
+
+export const persistor = persistStore(store);
+
+******************************
+add middleware to prevent errors
+
+in the main.jsx import the persistor from store.js and import a persistGate from redux-persist
+
+main.jsx
+...
+import {store, persistor} from 'store.js'
+import {PersistGate} from 'redux-persist'
+...
+  (
+    <PersistGate persistor={persistor}>
+      <Provider store={store}>
+        <App/>
+      </Provider>
+    </PersistGate>
+  )
+
+
+commit and push redux-persistor
+
