@@ -739,3 +739,152 @@ import {PersistGate} from 'redux-persist'
 
 commit and push redux-persistor
 
+----------------------------------------------------------
+signing in with google oAuth
+
+for us to implement this we would use firebase
+
+go to firebase create a new project and get the sdk config
+
+on the client terminal 
+
+------------->   npm i firebase
+
+create a file in the src directory of the client and call it firebase.js
+
+in the firebase.js input the sdk from firebase copied
+
+inside this firebaseConfig you would have to remove the api key to a .env file
+
+so create a .env file in the client root directory important and inside put this api key from firebase. 
+start name with VITE_ since its a vite app
+
+inside .env
+VITE_FIREBASE_API_KEY = 'api key'
+
+in the firebase config update code -------->
+
+
+...
+apikey: import.meta.env.VITE_FIREBASE_API_KEY
+
+
+export const app..
+
+
+----------------
+now we are done adding firebase sdk, in firebase complete the creation of the app and enable authentication
+and select any provider , in this case we would be using google since we want to sign in with google.
+
+now that its all set up
+
+we need to connect to this 
+
+
+in the components directory we would create an OAuth.jsx button component . this we would use in the signin and signup
+for signing in with google
+
+OAuth.jsx ---------->
+
+import {GoogleIcon} from 'react-icon'
+import {Button} from 'flowbite-react'
+import {app} from 'firebase.js'
+import {getAuth, GoogleAuthProvider, SignInWithPopup} from 'firebase/auth'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { signinSuccess } from '/redux/user/userSlice.js
+
+export default function OAuth(){
+  const auth = getAuth(app)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const handleGoogleSignin = async () => {
+    const provider = new GoogleAuthProvider()
+    provider.getCustomParameters({prompt: 'select-account'})
+
+    try{
+      const requestedData = await SignInWithPopup(auth, provider);
+      const res = await fetch('/api/auth/google', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          username: requestedData.user.displayName,
+          email: requestedData.user.email,
+          photoURL: requestedData.user.photoURL,
+        }),
+      })
+      const data = await res.json();
+      if(res.ok){ 
+        dispatch(signinSuccess(data))
+        navigate('/')
+      }
+    }catch(error){
+        dispatch(signinFailure(error.message))
+    }
+  }
+  return (
+    <Button type='submit' onClick={handleGoogleSignin}>
+      <GoogleIcon /> Google Signin
+    </Button>
+  )
+}
+
+
+-----------
+from the OAuth.jsx we are fetching from an api endpoint '/api/auth/google'
+we need to create this in the backend
+
+since we would be having a profilePIC we need to update the user.model.js--------->
+
+...,
+profilePIC: {
+  type: String,
+  default: 'http://link-to-placeholder-avatar'
+},
+...
+
+in the api/routers/auth.route.jsx --->
+
+import {googleSignin} from 'controllers/auth.controller.js'
+
+...
+router.post('/google', googleSignin);
+
+...
+
+create the googleSignin api logic in
+in the auth.controller.js ------->
+
+export const googleSignin = async (req, res, next) => {
+  const { username, email, photoURL } = req.body
+
+  try{
+    const user = await User.findOne({email})
+    if(!user){
+      const newUsername = username.split(' ').join('').toLowerCase() + Math.random().toString(9).slice(-4)
+      const generatedPassword = Math.random().toString(36).slice(-9) + Math.random().toString(36).slice(-9)
+      const newPassword = bcryptjs.hashSync(generatedPassword, 10)
+      
+      const newUser = await User({
+        username: newUsername,
+        email: email,
+        password: generatedPassword,
+        profilePIC: photoURL,
+      })
+      const res = await newUser.save()
+
+      const token = jwt.sign({userID: newUser._id}, process.env.JWT_SECRET)
+      const {password: pass, ...rest} = newUser._doc
+      res.status(200).cookie('access_token', token, {httpOnly: true}).json(rest) 
+    }else{
+      const token = jwt.sign({userID: user._id}, process.env.JWT_SECRET)
+      const {password: pass, ...rest} =  user._doc
+      res.status(200).cookie('access_token', token, {httpOnly: true}).json(rest)
+    }
+  }catch(error){
+    next(error)
+  }
+  
+}
+
